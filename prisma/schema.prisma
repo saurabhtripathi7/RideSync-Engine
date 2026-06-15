@@ -5,9 +5,147 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  output   = "../src/db/prisma-client"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+enum CabType {
+  SEDAN
+  SUV
+  VAN
+}
+
+enum DriverStatus {
+  AVAILABLE
+  BUSY
+  OFFLINE
+}
+
+enum PoolStatus {
+  FORMING
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum RideStatus {
+  SEARCHING
+  MATCHED
+  COMPLETED
+  CANCELLED
+}
+
+model Passenger {
+  id        String   @id @default(uuid())
+  name      String
+  phone     String   @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  rides     Ride[]
+
+  @@index([phone])
+}
+
+model Cab {
+  id              String  @id @default(uuid())
+  plateNumber     String  @unique
+  totalSeats      Int
+  luggageCapacity Int
+  cabType         CabType
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  driver          Driver?
+  pools           Pool[]
+
+  @@index([plateNumber])
+}
+
+model Driver {
+  id        String       @id @default(uuid())
+  name      String
+  phone     String       @unique
+  status    DriverStatus @default(AVAILABLE)
+
+  cabId     String       @unique
+
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  cab       Cab          @relation(fields: [cabId], references: [id], onDelete: Cascade)
+  pools     Pool[]
+
+  @@index([status])
+  @@index([phone])
+}
+
+model Pool {
+  id               String      @id @default(uuid())
+
+  cabId            String
+  driverId         String
+
+  status           PoolStatus  @default(FORMING)
+
+  totalSeatsUsed   Int         @default(0)
+  totalLuggageUsed Int         @default(0)
+
+  routeOrder       String      @default("[]")
+  routeDropoffLats String      @default("[]")
+  routeDropoffLngs String      @default("[]")
+
+  totalRouteDist   Float       @default(0)
+
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  cab              Cab         @relation(fields: [cabId], references: [id], onDelete: Cascade)
+  driver           Driver      @relation(fields: [driverId], references: [id], onDelete: Cascade)
+
+  rides            Ride[]
+
+  @@index([status, createdAt(sort: Asc)])
+  @@index([driverId])
+  @@index([cabId])
+}
+
+model Ride {
+  id               String      @id @default(uuid())
+
+  passengerId      String
+  poolId           String?
+
+  dropoffLat       Float
+  dropoffLng       Float
+
+  seatsNeeded      Int
+  luggageCount     Int
+
+  maxDetourPct     Float
+
+  directDist       Float
+  currentRouteDist Float?
+
+  fare             Float?
+
+  dropOrder        Int?
+
+  status           RideStatus  @default(SEARCHING)
+
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  passenger        Passenger   @relation(fields: [passengerId], references: [id], onDelete: Cascade)
+  pool             Pool?       @relation(fields: [poolId], references: [id])
+
+  @@index([poolId])
+  @@index([passengerId])
+  @@index([status])
+  @@index([createdAt])
 }
