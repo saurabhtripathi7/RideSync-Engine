@@ -1,5 +1,5 @@
 import prisma from "../db/prisma.js";
-import { CabType } from "../db/prisma-client/enums.js";
+import { CabType, } from "../db/prisma-client/enums.js";
 
 export async function createCab(
   plateNumber: string,
@@ -19,4 +19,15 @@ export async function createCab(
 
 export async function getCabs() {
   return prisma.cab.findMany();
+}
+
+export async function getCabById(id: string) {
+  return prisma.cab.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      driver: true,
+    },
+  });
 }

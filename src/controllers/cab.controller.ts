@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { createCab, getCabs } from "../services/cab.service.js";
+import { createCab, getCabs, getCabById } from "../services/cab.service.js";
 import { CabType } from "../db/prisma-client/enums.js";
 
 export async function createCabHandler(req: Request, res: Response) {
@@ -27,4 +27,21 @@ export async function getCabsHandler(req: Request, res: Response) {
   const cabs = await getCabs();
 
   res.json(cabs);
+}
+
+export async function getCabByIdHandler(
+  req: Request,
+  res: Response
+) {
+  const cab = await getCabById(
+    req.params.id as string
+  );
+
+  if (!cab) {
+    return res.status(404).json({
+      message: "Cab not found",
+    });
+  }
+
+  res.json(cab);
 }
