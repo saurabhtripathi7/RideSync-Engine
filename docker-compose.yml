@@ -16,5 +16,14 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  redis:
+    image: redis:8
+    container_name: airport-redis
+
+    restart: unless-stopped
+
+    ports:
+      - "6379:6379"
+
 volumes:
   postgres_data:
