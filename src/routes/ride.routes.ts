@@ -1,9 +1,17 @@
 import { Router } from "express";
 
+import {
+  createRideHandler,
+  getRidesHandler,
+  getRideByIdHandler,
+} from "../controllers/ride.controller.js";
+
 const router = Router();
 
-router.get("/", (req, res) => {
-  res.json({ message: "Ride routes working" });
-});
+router.post("/", createRideHandler);
+
+router.get("/", getRidesHandler);
+
+router.get("/:id", getRideByIdHandler);
 
 export default router;

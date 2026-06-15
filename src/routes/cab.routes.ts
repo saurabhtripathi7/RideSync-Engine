@@ -1,9 +1,12 @@
 import { Router } from "express";
+import {
+  createCabHandler,
+  getCabsHandler,
+} from "../controllers/cab.controller.js";
 
 const router = Router();
 
-router.get("/", (req, res) => {
-  res.json({ message: "Cab routes working" });
-});
+router.post("/", createCabHandler);
+router.get("/", getCabsHandler);
 
 export default router;

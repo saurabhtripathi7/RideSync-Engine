@@ -1,4 +1,5 @@
 import express from "express";
+import { errorHandler } from "./middleware/error.middleware.js";
 import rideRoutes from "./routes/ride.routes.js";
 import driverRoutes from "./routes/driver.routes.js";
 import passengerRoutes from "./routes/passenger.routes.js";
@@ -6,6 +7,7 @@ import cabRoutes from "./routes/cab.routes.js";
 
 const app = express();
 app.use(express.json());
+app.use(errorHandler);
 
 app.use("/rides", rideRoutes);
 app.use("/drivers", driverRoutes);

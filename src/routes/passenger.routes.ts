@@ -1,9 +1,17 @@
-import { Router } from "express";
+  import { Router } from "express";
 
-const router = Router();
+  import {
+    createPassengerHandler,
+    getPassengersHandler,
+    getPassengerByIdHandler,
+  } from "../controllers/passenger.controller.js";
 
-router.get("/", (req, res) => {
-  res.json({ message: "Passenger routes working" });
-});
+  const router = Router();
 
-export default router;
+  router.post("/", createPassengerHandler);
+
+  router.get("/", getPassengersHandler);
+
+  router.get("/:id", getPassengerByIdHandler);
+
+  export default router;
