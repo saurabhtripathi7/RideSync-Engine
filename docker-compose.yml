@@ -25,5 +25,16 @@ services:
     ports:
       - "6379:6379"
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: airport-rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"       # AMQP protocol port (your app connects here)
+      - "15672:15672"     # Management UI (browser: localhost:15672)
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
 volumes:
   postgres_data:
