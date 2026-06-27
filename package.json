@@ -4,9 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
+    "dev:server": "tsx watch src/server.ts",
+    "dev:worker": "tsx watch src/worker.ts",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:worker\"",
     "start": "tsx src/server.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "db:seed": "tsx prisma/seed.ts",
+    "drivers:onduty": "tsx scripts/put-drivers-on-duty.ts"
   },
   "keywords": [],
   "author": "",
@@ -29,6 +33,7 @@
     "@types/amqplib": "^0.10.8",
     "@types/express": "^5.0.6",
     "@types/node": "^25.9.3",
+    "concurrently": "^10.0.3",
     "nodemon": "^3.1.14",
     "ts-node": "^10.9.2",
     "tsx": "^4.22.4",
